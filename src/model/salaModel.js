@@ -1,7 +1,32 @@
+const { Timestamp } = require("mongodb");
 const db = require("./db")
 
- function listarSalas(){
-    return  db.findAll("salas");
+let listarSalas = async()=>
+{
+    let salas = await db.findAll("salas");
+    return salas
 }
 
-module.exports = {listarSalas}
+let buscarSala = async (idsala)=>{
+    return db.findOne("salas",idsala);
+}
+
+let atualizarMensagens = async (sala)=>{
+    return await db.uptateOne("salas",sala,{_id:sala._id});
+}
+
+let buscarMensagens = async(idsala,timestamp)=>{
+    let sala = await buscarSala(idsala);
+    if(sala.msgs){
+        let msgs =[];
+        sala.msgs.foreach((msg)=>{
+            if(msg.timestamp >= timestamp){
+                msgs.push(msg);
+            }
+        });
+        return msgs;
+    }
+    return [];
+}
+
+module.exports = {listarSalas, buscarSala, atualizarMensagens, buscarMensagens}

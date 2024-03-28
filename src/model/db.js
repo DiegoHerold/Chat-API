@@ -15,9 +15,24 @@ async function connect(){
 
 async function findAll(collection){
     const db = await connect();
-    console.log(db.collection(collection).find().toArray());
-    return db.collection(collection).find().toArray();
+    return await db.collection(collection).find().toArray();
    
 }
 
-module.exports = {findAll}
+async function findOne(collection,_id){
+    const db = await connect();
+    let obj = await db.collection(collection).find({'_id':new ObjectId(_id)}).toArray();
+    if(obj){
+        return obj[0]
+    }
+    return false;
+}
+
+async function updateOne(collection,object,param){
+    const db = await connect();
+    let result = await db.collection(collection).updateOne(param,{ $set, object});
+    return result
+}
+
+
+module.exports = {findAll,connect,findOne,uptateOne}
