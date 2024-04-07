@@ -6,10 +6,13 @@ app.use(express.urlencoded({extended  : true}));
 app.use(express.json());
 
 
-const router = express.Router(); 
+const router = express.Router();
+const salaController = require("./controller/salaController");
+
+
 // começo de rotas
 app.use('/',  router.get('/',(req,res)=>{
-    res.status(200).send("<h1>API - CHAT </h1>")
+    res.status(200).send("<h1>API -  CHAT </h1>")
 }))
 //sobre a API
 app.use('/',  router.get('/sobre',(req,res, next)=>{
@@ -21,16 +24,16 @@ app.use('/',  router.get('/sobre',(req,res, next)=>{
 }));
 
 
-//Login do chat
-app.use('/entrar',  router.post('/entrar',(req,res, next)=>{
+//entrar no chat
+app.use('/entrar',  router.post('/entrar', async(req,res, next)=>{
     const usuarioController = require("./controller/usuarioController");
-    let resp = usuarioController.entrar(req.body.nick);
+    let resp = await usuarioController.entrar(req.body.nick);
     res.status(200).send(resp);
 }));
 
 //Salas 
 //entrar na sala
-app.use("/sala/entrar", router.put("/sala/entrar", (async (req, res) => {
+app.use("/sala/entrar/", router.put("/sala/entrar", (async (req, res) => {
     if (!token.checkToken(req.headers.token, req.headers.iduser, req.headers.nick))
         return res.status(401).send("Token inválido");
     let resp = await salaController.entrar(req.headers.iduser, req.query.idsala);
@@ -48,18 +51,18 @@ app.use("/salas",router.get("/salas",async (req, res, next)=>{
 }))
 
 //Mensagens 
-//mandar mensagem
+//Enviar Mensagem
 app.use("/sala/mensagem", router.post("/sala/mensagem"), async (req,res) =>{
     if(!token.checkToken(req.headers.token, req.headers.iduser, req.headers.nick))
         return false;
-    let resp = await salaController.enviarMensagem(req.headers.nick, req.body.msg, req.body._id);
+    let resp = await salaController.enviarMensagem(req.headers.nick, req.body.msg, req.body.idSala);
     res.status(200).send(resp);
 })
 //listar mensagens
 app.use("/sala/mensagens", router.get("/sala/mensagens", async (req,res)=>{
     if(!token.checkToken(req.headers.token, req.headers.iduser, req.headers.nick))
     return false;
-    let resp = await salaController.buscarMensagens(req.query._idsala, req.query.timestamp);
+    let resp = await salaController.buscarMensagens(req.query.idSala, req.query.timestamp);
     res.status(200).send(resp);
 
 }))
