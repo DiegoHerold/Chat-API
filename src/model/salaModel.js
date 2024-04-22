@@ -12,10 +12,11 @@ let buscarSala = async (idsala)=>{
 }
 
 let atualizarMensagens = async (sala)=>{
-    return await db.updateOne("salas",sala,{_id:sala._id});
+    return await db.updateOne("salas",sala,{_id:sala._id})
 }
 
 let buscarMensagens = async(idsala,timestamp)=>{
+    
     let sala = await buscarSala(idsala);
     if(sala.msgs){
         let msgs =[];
@@ -29,4 +30,33 @@ let buscarMensagens = async(idsala,timestamp)=>{
     return [];
 }
 
-module.exports = {listarSalas, buscarSala, atualizarMensagens, buscarMensagens}
+let registrarSala = async (data)=> {
+    return await db.insertOne("salas", data);
+  }
+
+
+  let criarSala = async (nome, tipo)=>{
+    let sala = {
+        nome:nome,
+        tipo:tipo
+    }
+    return await db.insertOne('salas', sala);
+}
+
+  
+let sairSala = async (collection, documentoId)=> {
+    // Use o ObjectId para procurar o documento pelo ID
+    const filtroDocumento = { _id: new ObjectId(documentoId) };
+  
+    // Use $unset para remover o campo 'sala'
+    const atualizacao =  {sala: 1 };
+  
+    const result = await db.findOneAndUpdate(
+      filtroDocumento,
+      atualizacao
+    );
+  
+    return result;
+  }
+
+module.exports = {listarSalas, buscarSala, atualizarMensagens, buscarMensagens, registrarSala,sairSala,criarSala}

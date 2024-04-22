@@ -7,13 +7,18 @@ async function registrarUsuario(nick){
 }
 
 async function buscarUsuario(idUser){
-    let user = await db.findOne("Usuario",idUser);
+    console.log("buscarUsuario:"+idUser)
+    let user = await db.findOne("Usuario", idUser);
     console.log("user no usuario modal: "+user);
     return user;
 }
 
 async function alterarUsuario(user){
-    return await db.updateOne("Usuario",user,{_id:user._id})
+    return await db.updateOne("Usuario",user,{_id:user._id});
 }
 
-module.exports = {registrarUsuario,buscarUsuario,alterarUsuario};
+let excluirUsuario = async (idUser)=>{  
+    return await db.deleteOne('usuarios',idUser);   
+}
+
+module.exports = {registrarUsuario,buscarUsuario,alterarUsuario, excluirUsuario};
