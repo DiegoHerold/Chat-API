@@ -18,7 +18,7 @@ async function alterarUsuario(user){
 }
 
 let excluirUsuario = async (idUser)=>{  
-    return await db.deleteOne('usuarios',idUser);   
+    return await db.deleteOne('Usuario',idUser);   
 }
 
 module.exports = {registrarUsuario,buscarUsuario,alterarUsuario, excluirUsuario};

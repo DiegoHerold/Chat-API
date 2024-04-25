@@ -39,27 +39,12 @@ async function updateOne(collection,object,param){
     return result;
 }
 
-let deleteOne = async (collection, filter)=>{
+let deleteOne = async (collection, _id)=>{
     const db = await connect();
-    let result = await db.collection(collection).deleteOne(filter)
+    let result = await db.collection(collection).deleteOne({'_id':new ObjectId(_id)});
+    console.log(result);
     return result;
 }
 
 
-
-let deleteObject = async (collection, object , param)=>{
-    const unset = {$unset:object}
-    const db = await connect();
-    return await db.collection(collection).updateOne(param, unset);
-}
-
-
-let findOneAndUpdate = async (documentoId, atualizacao)=>{
-    if(await deleteObject('Usuario', atualizacao, documentoId)){
-        return true
-    }else{
-        return false
-    }
-}
-
-module.exports = {findAll,connect,findOne,updateOne,insertOne, deleteOne, deleteObject, findOneAndUpdate}
+module.exports = {findAll,connect,findOne,updateOne,insertOne, deleteOne}
